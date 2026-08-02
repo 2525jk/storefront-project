@@ -148,6 +148,34 @@ Printful integration later, means implementing that interface in
 `server/pod/printful.js` (or a new file) without touching the webhook handler
 that calls it.
 
+## Deploying the frontend to GitHub Pages
+
+`.github/workflows/deploy-pages.yml` builds the Astro frontend and publishes
+it to `https://2525jk.github.io/storefront-project/` on every push to
+`master`. It sets `GITHUB_PAGES=true` during the build, which is what tells
+[astro.config.mjs](astro.config.mjs) to use the `/storefront-project/` base
+path instead of the site root — local dev (`npm run dev`) and a plain
+`npm run build` are unaffected and keep serving from `/`.
+
+**This only deploys the static frontend.** GitHub Pages serves static files
+and can't run the Express server in `/server`, so on the published Pages
+site, clicking **Buy now** will fail — there's no backend at
+`http://localhost:3001` for the browser to reach. To make checkout work on
+the live site, you'd need to:
+
+1. Deploy `/server` somewhere that can run a Node process (e.g. Render, Fly.io,
+   Railway) with its own `.env` (see step 2 above), setting `CLIENT_URL` to
+   `https://2525jk.github.io/storefront-project`.
+2. Point the deployed frontend at that backend by setting
+   `PUBLIC_API_BASE_URL` (root `.env`, or as a repo variable consumed by the
+   workflow) to the deployed server's URL, instead of the
+   `http://localhost:3001` default baked into `BuyButton.tsx` / `OrderStatus.tsx`.
+3. Add that Pages origin to the backend's CORS allow-list (currently just
+   `CLIENT_URL`).
+
+Until then, treat the Pages deployment as a way to preview the catalog UI, not
+a fully working store.
+
 ## Project structure
 
 ```

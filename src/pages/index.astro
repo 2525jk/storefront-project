@@ -13,13 +13,19 @@ interface Product {
 }
 
 const catalog = products as Product[];
+
+// import.meta.env.BASE_URL already ends with a trailing slash, so strip a
+// leading slash off root-relative asset paths (favicon, product images)
+// before joining them, whether or not this build has a non-root base path.
+const base = import.meta.env.BASE_URL;
+const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 ---
 
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+		<link rel="icon" href={withBase('/favicon.ico')} />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Tee Shop</title>
@@ -115,7 +121,7 @@ const catalog = products as Product[];
 			{
 				catalog.map((product) => (
 					<div class="card">
-						<img src={product.image} alt={product.name} />
+						<img src={withBase(product.image)} alt={product.name} />
 						<h2>{product.name}</h2>
 						<p>{product.description}</p>
 						<p class="price">${(product.price / 100).toFixed(2)}</p>
