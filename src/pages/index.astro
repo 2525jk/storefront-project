@@ -1,6 +1,7 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import ProductActions from '../components/ProductActions.tsx';
 import products from '../../catalog/products.json';
-import BuyButton from '../components/BuyButton.tsx';
 
 interface Product {
   id: string;
@@ -14,121 +15,111 @@ interface Product {
 
 const catalog = products as Product[];
 
-// import.meta.env.BASE_URL already ends with a trailing slash, so strip a
-// leading slash off root-relative asset paths (favicon, product images)
-// before joining them, whether or not this build has a non-root base path.
 const base = import.meta.env.BASE_URL;
 const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
-		<link rel="icon" href={withBase('/favicon.ico')} />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Tee Shop</title>
-		<style>
-			body {
-				font-family: system-ui, sans-serif;
-				max-width: 960px;
-				margin: 0 auto;
-				padding: 2rem 1rem 4rem;
-				color: #1a1a1a;
+<Layout title="Tee Shop — print-on-demand t-shirts">
+	<section class="hero">
+		<h1 class="hero-title">Tee Shop</h1>
+		<p class="hero-subtitle">
+			Print-on-demand t-shirts. Every order is printed after you buy it — nothing sits around
+			waiting to sell.
+		</p>
+		<div class="test-mode-banner">
+			Stripe test mode — use card <code>4242 4242 4242 4242</code>, any future expiry, any CVC,
+			and any ZIP.
+		</div>
+		<ul class="trust-badges">
+			<li>🔒 Secure checkout via Stripe</li>
+			<li>🖨️ Printed to order</li>
+			<li>↩️ Hassle-free returns on defects</li>
+		</ul>
+	</section>
+
+	<div class="toolbar">
+		<input
+			class="input toolbar-search"
+			type="search"
+			id="product-search"
+			placeholder="Search products…"
+			aria-label="Search products"
+		/>
+		<select class="select toolbar-sort" id="product-sort" aria-label="Sort products">
+			<option value="featured">Featured</option>
+			<option value="price-asc">Price: low to high</option>
+			<option value="price-desc">Price: high to low</option>
+			<option value="name-asc">Name: A to Z</option>
+		</select>
+	</div>
+
+	<main class="product-grid" id="product-grid">
+		{
+			catalog.map((product, index) => (
+				<div
+					class="product-card card-surface"
+					data-name={product.name.toLowerCase()}
+					data-price={product.price}
+					data-order={index}
+				>
+					<a class="product-card-image" href={withBase(`/products/${product.id}`)}>
+						<img src={withBase(product.image)} alt={product.name} loading="lazy" />
+					</a>
+					<h2>
+						<a href={withBase(`/products/${product.id}`)}>{product.name}</a>
+					</h2>
+					<p>{product.description}</p>
+					<p class="price">${(product.price / 100).toFixed(2)}</p>
+					<ProductActions client:load product={product} />
+				</div>
+			))
+		}
+	</main>
+	<p class="toolbar-empty" id="toolbar-empty">No products match your search.</p>
+</Layout>
+
+<script>
+	const searchInput = document.getElementById('product-search') as HTMLInputElement | null;
+	const sortSelect = document.getElementById('product-sort') as HTMLSelectElement | null;
+	const grid = document.getElementById('product-grid');
+	const emptyMessage = document.getElementById('toolbar-empty');
+
+	function applyFilter() {
+		if (!grid) return;
+		const query = (searchInput?.value ?? '').trim().toLowerCase();
+		const cards = Array.from(grid.children) as HTMLElement[];
+		let visibleCount = 0;
+
+		for (const card of cards) {
+			const name = card.dataset.name ?? '';
+			const matches = name.includes(query);
+			card.style.display = matches ? '' : 'none';
+			if (matches) visibleCount += 1;
+		}
+
+		if (emptyMessage) {
+			emptyMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+		}
+	}
+
+	function applySort() {
+		if (!grid || !sortSelect) return;
+		const cards = Array.from(grid.children) as HTMLElement[];
+		const sorted = [...cards].sort((a, b) => {
+			switch (sortSelect.value) {
+				case 'price-asc':
+					return Number(a.dataset.price) - Number(b.dataset.price);
+				case 'price-desc':
+					return Number(b.dataset.price) - Number(a.dataset.price);
+				case 'name-asc':
+					return (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '');
+				default:
+					return Number(a.dataset.order) - Number(b.dataset.order);
 			}
-			header {
-				margin-bottom: 2rem;
-			}
-			.test-mode-banner {
-				background: #fff3cd;
-				border: 1px solid #ffe08a;
-				border-radius: 6px;
-				padding: 0.75rem 1rem;
-				font-size: 0.9rem;
-			}
-			.grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-				gap: 1.5rem;
-			}
-			.card {
-				border: 1px solid #e2e2e2;
-				border-radius: 8px;
-				padding: 1rem;
-				display: flex;
-				flex-direction: column;
-				gap: 0.5rem;
-			}
-			.card img {
-				width: 100%;
-				aspect-ratio: 1;
-				object-fit: cover;
-				border-radius: 6px;
-			}
-			.card h2 {
-				font-size: 1.1rem;
-				margin: 0;
-			}
-			.card p {
-				margin: 0;
-				font-size: 0.9rem;
-				color: #444;
-			}
-			.price {
-				font-weight: 600;
-				font-size: 1.05rem;
-				color: #1a1a1a;
-			}
-			.buy-button {
-				display: flex;
-				gap: 0.5rem;
-				margin-top: 0.5rem;
-			}
-			.buy-button select {
-				flex: 0 0 auto;
-			}
-			.buy-button button {
-				flex: 1;
-				background: #1a1a1a;
-				color: white;
-				border: none;
-				border-radius: 6px;
-				padding: 0.6rem 1rem;
-				cursor: pointer;
-				font-size: 0.95rem;
-			}
-			.buy-button button:disabled {
-				opacity: 0.6;
-				cursor: not-allowed;
-			}
-			.buy-button-error {
-				color: #b00020;
-				font-size: 0.85rem;
-			}
-		</style>
-	</head>
-	<body>
-		<header>
-			<h1>Tee Shop</h1>
-			<p>Print-on-demand t-shirts, built to learn Stripe Checkout.</p>
-			<div class="test-mode-banner">
-				Stripe test mode — use card <code>4242 4242 4242 4242</code>, any future expiry, any CVC,
-				and any ZIP.
-			</div>
-		</header>
-		<main class="grid">
-			{
-				catalog.map((product) => (
-					<div class="card">
-						<img src={withBase(product.image)} alt={product.name} />
-						<h2>{product.name}</h2>
-						<p>{product.description}</p>
-						<p class="price">${(product.price / 100).toFixed(2)}</p>
-						<BuyButton client:load productId={product.id} sizes={product.sizes} />
-					</div>
-				))
-			}
-		</main>
-	</body>
-</html>
+		});
+		for (const card of sorted) grid.appendChild(card);
+	}
+
+	searchInput?.addEventListener('input', applyFilter);
+	sortSelect?.addEventListener('change', applySort);
+</script>

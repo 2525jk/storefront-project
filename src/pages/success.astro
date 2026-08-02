@@ -1,45 +1,13 @@
 ---
+import Layout from '../layouts/Layout.astro';
 import OrderStatus from '../components/OrderStatus.tsx';
 
 const sessionId = Astro.url.searchParams.get('session_id');
 const base = import.meta.env.BASE_URL;
-const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
-		<meta name="viewport" content="width=device-width" />
-		<title>Order confirmed — Tee Shop</title>
-		<style>
-			body {
-				font-family: system-ui, sans-serif;
-				max-width: 640px;
-				margin: 4rem auto;
-				padding: 0 1rem;
-				color: #1a1a1a;
-			}
-			.order-status {
-				border: 1px solid #e2e2e2;
-				border-radius: 8px;
-				padding: 1rem 1.25rem;
-				margin: 1.5rem 0;
-			}
-			.order-status-confirmed {
-				border-color: #b7e4c7;
-				background: #f1faf4;
-			}
-			.order-status-pending {
-				border-color: #ffe08a;
-				background: #fff8e6;
-			}
-			a {
-				color: #1a1a1a;
-			}
-		</style>
-	</head>
-	<body>
+<Layout title="Order confirmed — Tee Shop">
+	<div class="simple-page">
 		<h1>Thank you for your order!</h1>
 		{
 			sessionId ? (
@@ -54,5 +22,5 @@ const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 			)
 		}
 		<p><a href={base}>Back to shop</a></p>
-	</body>
-</html>
+	</div>
+</Layout>

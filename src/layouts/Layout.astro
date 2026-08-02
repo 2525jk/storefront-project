@@ -1,0 +1,109 @@
+---
+import '../styles/global.css';
+import CartBadge from '../components/CartBadge.tsx';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Print-on-demand t-shirts — nothing is printed until you order it.',
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
+const year = new Date().getFullYear();
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+		<link rel="icon" href={withBase('/favicon.ico')} />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<a href="#main" class="skip-link">Skip to content</a>
+		<header class="site-header">
+			<div class="wrap site-header-inner">
+				<a href={base} class="brand">Tee Shop</a>
+				<nav class="site-nav" aria-label="Primary">
+					<a href={base}>Shop</a>
+					<CartBadge client:load href={withBase('/cart')} />
+				</nav>
+			</div>
+		</header>
+
+		<main id="main" class="wrap site-main">
+			<slot />
+		</main>
+
+		<footer class="site-footer">
+			<div class="wrap site-footer-inner">
+				<div class="footer-col footer-brand">
+					<p class="brand">Tee Shop</p>
+					<p class="footer-blurb">
+						Small-batch, print-on-demand tees. Nothing is printed until you order it, so
+						nothing sits around in a warehouse.
+					</p>
+				</div>
+				<div class="footer-col">
+					<h2>Shop</h2>
+					<ul>
+						<li><a href={base}>All products</a></li>
+						<li><a href={withBase('/cart')}>Cart</a></li>
+					</ul>
+				</div>
+				<div class="footer-col">
+					<h2>Help</h2>
+					<details class="footer-details">
+						<summary>Shipping &amp; returns</summary>
+						<p>
+							Every item is printed after you order it, so please allow 3–5 business days for
+							production plus standard shipping time. Because each piece is made to order, sales
+							are final unless an item arrives damaged or defective — contact us and we'll sort
+							it out.
+						</p>
+					</details>
+					<p><a href="mailto:hello@example.com">Contact us</a></p>
+				</div>
+				<div class="footer-col">
+					<h2>Stay in the loop</h2>
+					<form class="newsletter-form" id="newsletter-form">
+						<label class="visually-hidden" for="newsletter-email">Email address</label>
+						<input
+							class="input"
+							id="newsletter-email"
+							name="email"
+							type="email"
+							placeholder="you@example.com"
+							required
+						/>
+						<button class="btn btn-primary btn-sm" type="submit">Subscribe</button>
+					</form>
+					<p class="newsletter-note" id="newsletter-note" hidden>Thanks — you're on the list!</p>
+				</div>
+			</div>
+			<div class="wrap site-footer-bottom">
+				<p>&copy; {year} Tee Shop. All rights reserved.</p>
+			</div>
+		</footer>
+
+		<script>
+			// Newsletter form has no backend endpoint yet — this only gives
+			// visual confirmation so the footer doesn't feel like dead UI.
+			const form = document.getElementById('newsletter-form');
+			const note = document.getElementById('newsletter-note');
+			form?.addEventListener('submit', (event) => {
+				event.preventDefault();
+				form.setAttribute('hidden', '');
+				note?.removeAttribute('hidden');
+			});
+		</script>
+	</body>
+</html>

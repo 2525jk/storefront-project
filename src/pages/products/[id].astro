@@ -1,0 +1,73 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductActions from '../../components/ProductActions.tsx';
+import products from '../../../catalog/products.json';
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  image: string;
+  sizes: string[];
+}
+
+export function getStaticPaths() {
+  return (products as Product[]).map((product) => ({
+    params: { id: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props as { product: Product };
+const related = (products as Product[]).filter((p) => p.id !== product.id).slice(0, 3);
+
+const base = import.meta.env.BASE_URL;
+const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
+---
+
+<Layout title={`${product.name} — Tee Shop`} description={product.description}>
+	<nav class="breadcrumb" aria-label="Breadcrumb">
+		<a href={base}>Shop</a>
+		<span class="breadcrumb-sep">/</span>
+		<span aria-current="page">{product.name}</span>
+	</nav>
+
+	<div class="product-detail">
+		<div class="product-detail-image">
+			<img src={withBase(product.image)} alt={product.name} />
+		</div>
+		<div class="product-detail-info">
+			<h1 class="product-detail-title">{product.name}</h1>
+			<p class="product-detail-price">${(product.price / 100).toFixed(2)}</p>
+			<p class="product-detail-description">{product.description}</p>
+			<ProductActions client:load product={product} variant="detail" />
+			<div class="product-detail-meta">
+				<p>🖨️ Printed to order — please allow 3–5 business days before it ships.</p>
+				<p>🔒 Payment processed securely by Stripe.</p>
+			</div>
+		</div>
+	</div>
+
+	{
+		related.length > 0 && (
+			<section class="related-products">
+				<h2>You might also like</h2>
+				<div class="product-grid">
+					{related.map((p) => (
+						<div class="product-card card-surface">
+							<a class="product-card-image" href={withBase(`/products/${p.id}`)}>
+								<img src={withBase(p.image)} alt={p.name} loading="lazy" />
+							</a>
+							<h2>
+								<a href={withBase(`/products/${p.id}`)}>{p.name}</a>
+							</h2>
+							<p class="price">${(p.price / 100).toFixed(2)}</p>
+						</div>
+					))}
+				</div>
+			</section>
+		)
+	}
+</Layout>

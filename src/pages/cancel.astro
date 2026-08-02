@@ -1,29 +1,13 @@
 ---
+import Layout from '../layouts/Layout.astro';
+
 const base = import.meta.env.BASE_URL;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
-		<meta name="viewport" content="width=device-width" />
-		<title>Checkout cancelled — Tee Shop</title>
-		<style>
-			body {
-				font-family: system-ui, sans-serif;
-				max-width: 640px;
-				margin: 4rem auto;
-				padding: 0 1rem;
-				color: #1a1a1a;
-			}
-			a {
-				color: #1a1a1a;
-			}
-		</style>
-	</head>
-	<body>
+<Layout title="Checkout cancelled — Tee Shop">
+	<div class="simple-page">
 		<h1>Checkout cancelled</h1>
-		<p>No charge was made. You can head back and try again whenever you're ready.</p>
+		<p>No charge was made. Your cart is still saved — head back and try again whenever you're ready.</p>
 		<p><a href={base}>Back to shop</a></p>
-	</body>
-</html>
+	</div>
+</Layout>

@@ -4,11 +4,11 @@ const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || 'http://localhost:30
 
 interface BuyButtonProps {
   productId: string;
-  sizes?: string[];
+  size?: string | null;
+  quantity?: number;
 }
 
-export default function BuyButton({ productId, sizes }: BuyButtonProps) {
-  const [size, setSize] = useState(sizes?.[0] ?? '');
+export default function BuyButton({ productId, size = null, quantity = 1 }: BuyButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +19,7 @@ export default function BuyButton({ productId, sizes }: BuyButtonProps) {
       const res = await fetch(`${API_BASE_URL}/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, quantity: 1, size }),
+        body: JSON.stringify({ items: [{ productId, quantity, size: size || undefined }] }),
       });
 
       const data = await res.json();
@@ -36,21 +36,7 @@ export default function BuyButton({ productId, sizes }: BuyButtonProps) {
 
   return (
     <div className="buy-button">
-      {sizes && sizes.length > 0 && (
-        <select
-          value={size}
-          onChange={(e) => setSize(e.target.value)}
-          disabled={loading}
-          aria-label="Size"
-        >
-          {sizes.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-      )}
-      <button onClick={handleBuy} disabled={loading}>
+      <button type="button" className="btn btn-primary" onClick={handleBuy} disabled={loading}>
         {loading ? 'Redirecting…' : 'Buy now'}
       </button>
       {error && <p className="buy-button-error">{error}</p>}

@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CartView from '../components/CartView.tsx';
+---
+
+<Layout title="Your cart — Tee Shop">
+	<h1 class="hero-title">Your cart</h1>
+	<CartView client:load />
+</Layout>

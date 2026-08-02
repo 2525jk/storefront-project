@@ -1,14 +1,24 @@
 import { useEffect, useState } from 'react';
+import { removeFromCart } from '../lib/cart';
+import products from '../../catalog/products.json';
 
 const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || 'http://localhost:3001';
 const POLL_INTERVAL_MS = 1500;
 const MAX_ATTEMPTS = 10;
 
-interface Order {
-  session_id: string;
+const productNames: Record<string, string> = Object.fromEntries(
+  (products as { id: string; name: string }[]).map((p) => [p.id, p.name]),
+);
+
+interface OrderItem {
   product_id: string;
   quantity: number;
   size: string | null;
+}
+
+interface Order {
+  session_id: string;
+  items: OrderItem[];
   amount_total: number | null;
   currency: string | null;
   status: string;
@@ -45,14 +55,27 @@ export default function OrderStatus({ sessionId }: OrderStatusProps) {
     return () => clearTimeout(timer);
   }, [order, attempts, sessionId]);
 
+  // Once the order is confirmed, drop exactly the purchased lines from the
+  // cart (not a blanket clear) — a quick "Buy now" purchase shouldn't wipe
+  // out unrelated items the shopper still has queued up.
+  useEffect(() => {
+    if (!order) return;
+    for (const item of order.items) {
+      removeFromCart(item.product_id, item.size);
+    }
+  }, [order]);
+
   if (order) {
     return (
       <div className="order-status order-status-confirmed">
         <p>✅ Order confirmed and recorded.</p>
         <ul>
-          <li>Product: {order.product_id}</li>
-          <li>Quantity: {order.quantity}</li>
-          {order.size && <li>Size: {order.size}</li>}
+          {order.items.map((item, index) => (
+            <li key={`${item.product_id}-${item.size ?? ''}-${index}`}>
+              {productNames[item.product_id] ?? item.product_id} × {item.quantity}
+              {item.size && ` (${item.size})`}
+            </li>
+          ))}
           {order.amount_total != null && (
             <li>
               Paid: {(order.amount_total / 100).toFixed(2)} {order.currency?.toUpperCase()}

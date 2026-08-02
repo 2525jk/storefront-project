@@ -4,11 +4,18 @@ A print-on-demand t-shirt storefront built to learn Stripe Checkout, webhooks, a
 the moving pieces around them. Astro (with a couple of React islands) for the
 frontend, Express + SQLite for the backend.
 
-- **Frontend**: Astro, static product pages with React islands (`BuyButton`,
-  `OrderStatus`) for anything that needs client-side interactivity.
+- **Frontend**: Astro, with a product grid, per-product detail pages, and a
+  cart page, sharing one `Layout.astro` (header, nav, footer). A small
+  localStorage-backed cart (`src/lib/cart.ts`) powers "Add to cart" across the
+  site, plus React islands (`ProductActions`, `CartView`, `CartBadge`,
+  `OrderStatus`) for anything that needs client-side interactivity. A quick
+  "Buy now" button still checks out a single item immediately, bypassing the
+  cart.
 - **Backend** (`/server`): Express API with a `POST /create-checkout-session`
-  endpoint and a signature-verified `POST /webhooks/stripe` handler that writes
-  paid orders to SQLite, idempotently keyed by Checkout session ID.
+  endpoint (accepts a cart's worth of line items in one call) and a
+  signature-verified `POST /webhooks/stripe` handler that writes paid orders
+  — and their line items — to SQLite, idempotently keyed by Checkout session
+  ID.
 - **Catalog**: 3 hardcoded products in [catalog/products.json](catalog/products.json),
   shared by both the frontend (for display) and the backend (for pricing —
   never trust a price from the client).
@@ -104,8 +111,10 @@ Visit `http://localhost:4321`.
 
 ## 5. Test a purchase
 
-Click **Buy now** on any product, which POSTs to `/create-checkout-session`
-and redirects to Stripe's hosted Checkout page. Use a
+Either click **Buy now** on any product for a single-item checkout, or
+**Add to cart** a few things and check out from the cart page — both paths
+POST to `/create-checkout-session` (as `{ items: [{ productId, quantity,
+size }, ...] }`) and redirect to Stripe's hosted Checkout page. Use a
 [Stripe test card](https://docs.stripe.com/testing#cards):
 
 - Card number: `4242 4242 4242 4242`
@@ -130,14 +139,29 @@ Stripe  --checkout.session.completed event----------> stripe listen --> Express 
 Express: verify signature -> INSERT OR IGNORE order (keyed by session id) -> call pod provider (stub)
 ```
 
+### Cart and checkout
+
+The cart (`src/lib/cart.ts`) lives entirely in the browser's `localStorage` —
+there's no server-side cart state. "Add to cart" and the cart page's
+quantity/remove controls just read and rewrite that one JSON blob; a
+same-tab `CustomEvent` keeps every open component (cart badge, cart page) in
+sync without a page reload. Checking out — from the cart page or a single
+"Buy now" — POSTs the relevant line items to `/create-checkout-session`,
+which re-prices everything server-side from [catalog/products.json](catalog/products.json)
+(never trusting a price the client sends) and creates one Stripe Checkout
+Session covering every line item.
+
 ### Idempotent order writes
 
 Stripe may deliver the same webhook event more than once (retries, at-least-once
-delivery). [server/db.js](server/db.js) has a `UNIQUE` constraint on
-`session_id` and uses `INSERT OR IGNORE`, so a duplicate delivery is a no-op
-instead of a duplicate order or a duplicate fulfillment request. Only the
-insert that actually changed a row (`info.changes === 1`) triggers a call to
-the fulfillment provider.
+delivery). [server/db.js](server/db.js) stores each Checkout session as one
+row in `orders` (with a `UNIQUE` constraint on `session_id`) plus one row per
+line item in `order_items`. `recordOrder` uses `INSERT OR IGNORE` for the
+`orders` row, so a duplicate delivery is a no-op instead of a duplicate order,
+duplicate line items, or a duplicate fulfillment request — the line items are
+only inserted when the order insert itself actually changed a row
+(`info.changes === 1`), and only then does the webhook handler call the
+fulfillment provider, once per line item.
 
 ### Print-on-demand adapter
 
@@ -179,17 +203,25 @@ a fully working store.
 ## Project structure
 
 ```
-catalog/products.json        shared product catalog (frontend + backend)
-src/pages/                   index (catalog), success, cancel
-src/components/              BuyButton.tsx, OrderStatus.tsx (React islands)
-server/index.js              Express app entry
-server/routes/checkout.js    POST /create-checkout-session
-server/routes/webhook.js     POST /webhooks/stripe
-server/routes/orders.js      GET /orders/:sessionId (used by the success page)
-server/db.js                 SQLite setup + idempotent order writes
-server/catalog.js            loads the shared catalog on the backend
-server/pod/provider.js       fulfillment adapter interface
-server/pod/printful.js       stub adapter (not implemented)
+catalog/products.json          shared product catalog (frontend + backend)
+src/layouts/Layout.astro       shared header/nav/cart badge/footer
+src/lib/cart.ts                localStorage cart engine (add/update/remove, pub-sub)
+src/pages/                     index (shop), products/[id] (detail), cart, success, cancel, 404
+src/components/
+  ProductActions.tsx           size/quantity + Add to cart + Buy now, used on cards and detail pages
+  AddToCartButton.tsx          adds a line to the localStorage cart
+  BuyButton.tsx                single-item "quick buy" straight to Checkout
+  CartBadge.tsx                header cart icon + item count
+  CartView.tsx                 cart page: line items, quantity, remove, checkout
+  OrderStatus.tsx              polls for the confirmed order on the success page
+server/index.js                Express app entry
+server/routes/checkout.js      POST /create-checkout-session (accepts a cart's worth of items)
+server/routes/webhook.js       POST /webhooks/stripe
+server/routes/orders.js        GET /orders/:sessionId (used by the success page)
+server/db.js                   SQLite setup (orders + order_items) + idempotent order writes
+server/catalog.js              loads the shared catalog on the backend
+server/pod/provider.js         fulfillment adapter interface
+server/pod/printful.js         stub adapter (not implemented)
 ```
 
 ## Development

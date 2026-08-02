@@ -24,13 +24,25 @@ router.post('/webhooks/stripe', async (req, res) => {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const metadata = session.metadata || {};
+
+    // Line items were stashed as compact {p,q,s} JSON in metadata by
+    // /create-checkout-session (see server/routes/checkout.js) since a
+    // Checkout Session's own line_items aren't included on this event.
+    let items = [];
+    try {
+      const rawItems = JSON.parse(session.metadata?.items ?? '[]');
+      items = rawItems.map((item) => ({
+        productId: item.p,
+        quantity: Number(item.q) || 1,
+        size: item.s || null,
+      }));
+    } catch (err) {
+      console.error(`Could not parse items metadata for session ${session.id}:`, err.message);
+    }
 
     const isNewOrder = recordOrder({
       sessionId: session.id,
-      productId: metadata.productId,
-      quantity: Number(metadata.quantity) || 1,
-      size: metadata.size || null,
+      items,
       amountTotal: session.amount_total,
       currency: session.currency,
       customerEmail: session.customer_details?.email ?? null,
@@ -38,17 +50,22 @@ router.post('/webhooks/stripe', async (req, res) => {
 
     if (isNewOrder) {
       const provider = getProvider();
-      provider
-        .submitOrder({
-          sessionId: session.id,
-          productId: metadata.productId,
-          quantity: Number(metadata.quantity) || 1,
-          size: metadata.size || undefined,
-          customerEmail: session.customer_details?.email ?? undefined,
-        })
-        .catch((err) => {
-          console.error('[pod] fulfillment submission failed:', err.message);
-        });
+      for (const item of items) {
+        provider
+          .submitOrder({
+            sessionId: session.id,
+            productId: item.productId,
+            quantity: item.quantity,
+            size: item.size ?? undefined,
+            customerEmail: session.customer_details?.email ?? undefined,
+          })
+          .catch((err) => {
+            console.error(
+              `[pod] fulfillment submission failed for ${item.productId} (session ${session.id}):`,
+              err.message,
+            );
+          });
+      }
     } else {
       console.log(`Duplicate webhook delivery for session ${session.id}, order already recorded`);
     }
