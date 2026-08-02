@@ -31,7 +31,20 @@ const year = new Date().getFullYear();
 		<a href="#main" class="skip-link">Skip to content</a>
 		<header class="site-header">
 			<div class="wrap site-header-inner">
-				<a href={base} class="brand">Tee Shop</a>
+				<a href={base} class="brand">
+					<svg class="brand-mark" width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+						<rect width="32" height="32" rx="9" fill="#1f6f54" />
+						<path d="M6 21 L12 12 L16 17 L20 10 L26 21 Z" fill="#ffffff" opacity="0.95" />
+						<path
+							d="M4 25.5 Q9 22 14 25.5 T24 25.5 T30 25.5"
+							stroke="#bfe3d6"
+							stroke-width="1.6"
+							fill="none"
+							stroke-linecap="round"
+						/>
+					</svg>
+					<span>Tee Shop</span>
+				</a>
 				<nav class="site-nav" aria-label="Primary">
 					<a href={base}>Shop</a>
 					<CartBadge client:load href={withBase('/cart')} />
@@ -46,7 +59,20 @@ const year = new Date().getFullYear();
 		<footer class="site-footer">
 			<div class="wrap site-footer-inner">
 				<div class="footer-col footer-brand">
-					<p class="brand">Tee Shop</p>
+					<p class="brand">
+						<svg class="brand-mark" width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
+							<rect width="32" height="32" rx="9" fill="#e7f3ee" />
+							<path d="M6 21 L12 12 L16 17 L20 10 L26 21 Z" fill="#1f6f54" opacity="0.9" />
+							<path
+								d="M4 25.5 Q9 22 14 25.5 T24 25.5 T30 25.5"
+								stroke="#157a9c"
+								stroke-width="1.6"
+								fill="none"
+								stroke-linecap="round"
+							/>
+						</svg>
+						<span>Tee Shop</span>
+					</p>
 					<p class="footer-blurb">
 						Small-batch, print-on-demand tees. Nothing is printed until you order it, so
 						nothing sits around in a warehouse.

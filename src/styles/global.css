@@ -1,25 +1,36 @@
 /* Design tokens shared by every page. Kept as plain CSS custom properties
    (no build-step preprocessor) since Astro ships this untouched. */
 :root {
-  --color-bg: #faf9f7;
+  /* Nature-inspired palette (the catalog is mountain/wave/forest tees —
+     the theme leans into that instead of a generic neutral gray). */
+  --color-bg: #f2f8f6;
   --color-surface: #ffffff;
-  --color-text: #1a1a1a;
-  --color-text-muted: #5c5c5c;
-  --color-border: #e4e2de;
-  --color-accent: #1a1a1a;
+  --color-text: #142621;
+  --color-text-muted: #52756b;
+  --color-border: #d9e8e2;
+  --color-primary: #1f6f54;
+  --color-primary-dark: #164f3c;
+  --color-secondary: #157a9c;
+  --color-accent: var(--color-primary);
   --color-accent-contrast: #ffffff;
-  --color-success-bg: #f1faf4;
-  --color-success-border: #b7e4c7;
+  --gradient-brand: linear-gradient(135deg, #157a9c 0%, #1f6f54 100%);
+  --color-success-bg: #edf8f0;
+  --color-success-border: #a9dcbd;
   --color-warning-bg: #fff8e6;
   --color-warning-border: #ffe08a;
   --color-danger: #b00020;
+
+  --color-footer-bg: #123528;
+  --color-footer-text: #d9ede4;
+  --color-footer-text-muted: #8fb8a8;
+  --color-footer-border: rgba(255, 255, 255, 0.14);
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 1px 2px rgba(20, 60, 45, 0.06);
+  --shadow-md: 0 8px 24px rgba(20, 60, 45, 0.12);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -31,6 +42,7 @@
   --content-width: 1100px;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
     sans-serif;
+  --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
 }
 
 * {
@@ -39,6 +51,7 @@
 
 html {
   color-scheme: light;
+  scrollbar-color: var(--color-border) var(--color-bg);
 }
 
 body {
@@ -56,6 +69,41 @@ img {
 
 a {
   color: inherit;
+}
+
+h1,
+h2 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
 }
 
 .wrap {
@@ -92,22 +140,24 @@ a {
 }
 
 .btn-primary {
-  background: var(--color-accent);
+  background: var(--color-primary);
   color: var(--color-accent-contrast);
 }
 
 .btn-primary:hover:not(:disabled) {
-  opacity: 0.88;
+  background: var(--color-primary-dark);
+  opacity: 1;
 }
 
 .btn-secondary {
   background: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-primary-dark);
   border: 1px solid var(--color-border);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #f2f1ee;
+  background: var(--color-bg);
+  border-color: var(--color-primary);
 }
 
 .btn-block {
@@ -133,7 +183,7 @@ a {
 
 .input:focus,
 .select:focus {
-  outline: 2px solid var(--color-text);
+  outline: 2px solid var(--color-secondary);
   outline-offset: 1px;
 }
 
@@ -152,7 +202,7 @@ a {
   height: 1.1rem;
   padding: 0 0.3rem;
   border-radius: 999px;
-  background: var(--color-accent);
+  background: var(--color-secondary);
   color: var(--color-accent-contrast);
   font-size: 0.7rem;
   font-weight: 700;
@@ -203,10 +253,20 @@ a {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-serif);
   font-size: 1.2rem;
   font-weight: 700;
   text-decoration: none;
   letter-spacing: -0.01em;
+  color: var(--color-primary-dark);
+}
+
+.brand-mark {
+  flex: 0 0 auto;
+  display: block;
 }
 
 .site-nav {
@@ -221,6 +281,7 @@ a {
 }
 
 .site-nav a:hover {
+  color: var(--color-secondary);
   text-decoration: underline;
 }
 
@@ -229,7 +290,12 @@ a {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem;
+  color: var(--color-primary-dark);
   text-decoration: none !important;
+}
+
+.cart-link:hover {
+  color: var(--color-secondary);
 }
 
 .cart-badge {
@@ -243,9 +309,21 @@ a {
   min-height: 50vh;
 }
 
-/* Hero */
+/* Hero — used only on the shop page; a gradient "card" rather than a
+   full-bleed band so it doesn't require restructuring the shared Layout. */
 .hero {
-  padding-bottom: var(--space-6);
+  background: var(--gradient-brand);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem 2rem;
+  margin-bottom: var(--space-8);
+}
+
+.hero .hero-title {
+  color: #ffffff;
+}
+
+.hero .hero-subtitle {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .hero-title {
@@ -261,7 +339,7 @@ a {
 }
 
 .test-mode-banner {
-  background: var(--color-warning-bg);
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--color-warning-border);
   border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
@@ -277,13 +355,20 @@ a {
   padding: 0;
   list-style: none;
   font-size: 0.85rem;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .trust-badges li {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+}
+
+.hero-ridge {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin-top: 1.5rem;
 }
 
 /* Toolbar (search + sort) */
@@ -350,6 +435,7 @@ a {
 }
 
 .product-card h2 a:hover {
+  color: var(--color-secondary);
   text-decoration: underline;
 }
 
@@ -360,9 +446,9 @@ a {
 }
 
 .price {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.05rem;
-  color: var(--color-text);
+  color: var(--color-primary-dark);
 }
 
 .product-actions {
@@ -425,6 +511,7 @@ a {
 }
 
 .breadcrumb a:hover {
+  color: var(--color-secondary);
   text-decoration: underline;
 }
 
@@ -459,6 +546,8 @@ a {
 
 .product-detail-price {
   font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
   margin: 0 0 var(--space-4);
 }
 
@@ -532,7 +621,8 @@ a {
 }
 
 .cart-row-subtotal {
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--color-primary-dark);
   white-space: nowrap;
 }
 
@@ -565,6 +655,7 @@ a {
 .cart-summary-total {
   font-size: 1.1rem;
   font-weight: 700;
+  color: var(--color-primary-dark);
 }
 
 .cart-summary-note {
@@ -617,10 +708,11 @@ a {
   text-align: left;
 }
 
-/* Footer */
+/* Footer — a dark forest-green band, deliberately distinct from the light
+   body so the page reads as designed rather than a single flat template. */
 .site-footer {
-  border-top: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-footer-bg);
+  color: var(--color-footer-text-muted);
   margin-top: var(--space-8);
 }
 
@@ -633,20 +725,22 @@ a {
 
 .footer-brand .brand {
   font-size: 1.1rem;
+  color: var(--color-footer-text);
 }
 
 .footer-blurb {
-  color: var(--color-text-muted);
+  color: var(--color-footer-text-muted);
   font-size: 0.9rem;
   line-height: 1.5;
   max-width: 26rem;
 }
 
 .footer-col h2 {
+  font-family: var(--font-sans);
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-text-muted);
+  color: var(--color-footer-text);
   margin: 0 0 var(--space-3);
 }
 
@@ -665,6 +759,7 @@ a {
 }
 
 .footer-col ul a:hover {
+  color: #ffffff;
   text-decoration: underline;
 }
 
@@ -676,10 +771,11 @@ a {
 .footer-details summary {
   cursor: pointer;
   font-weight: 600;
+  color: var(--color-footer-text);
 }
 
 .footer-details p {
-  color: var(--color-text-muted);
+  color: var(--color-footer-text-muted);
   line-height: 1.5;
   margin: 0.5rem 0 0;
 }
@@ -694,17 +790,26 @@ a {
   min-width: 0;
 }
 
+.newsletter-form .btn {
+  background: #ffffff;
+  color: var(--color-primary-dark);
+}
+
+.newsletter-form .btn:hover:not(:disabled) {
+  background: var(--color-footer-text);
+}
+
 .newsletter-note {
   font-size: 0.85rem;
-  color: var(--color-text);
+  color: var(--color-footer-text);
   margin-top: 0.5rem;
 }
 
 .site-footer-bottom {
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-footer-border);
   padding: var(--space-4) 1.25rem;
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: var(--color-footer-text-muted);
 }
 
 /* Responsive */

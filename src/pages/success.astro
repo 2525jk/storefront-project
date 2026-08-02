@@ -24,3 +24,13 @@ const base = import.meta.env.BASE_URL;
 		<p><a href={base}>Back to shop</a></p>
 	</div>
 </Layout>
+
+<script>
+	// A completed checkout means everything in the cart was just purchased —
+	// clear it so a refresh or repeat visit doesn't show stale items.
+	import { clearCart } from '../lib/cart';
+
+	if (new URLSearchParams(window.location.search).get('session_id')) {
+		clearCart();
+	}
+</script>
