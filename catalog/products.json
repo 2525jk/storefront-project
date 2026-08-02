@@ -1,0 +1,29 @@
+[
+  {
+    "id": "tee-mountain",
+    "name": "Mountain Line Tee",
+    "description": "Soft 100% cotton crew neck with a minimalist mountain range print.",
+    "price": 2500,
+    "currency": "usd",
+    "image": "/products/mountain-tee.svg",
+    "sizes": ["S", "M", "L", "XL"]
+  },
+  {
+    "id": "tee-wave",
+    "name": "Ocean Wave Tee",
+    "description": "Lightweight tee with a hand-drawn wave graphic, printed on demand.",
+    "price": 2500,
+    "currency": "usd",
+    "image": "/products/wave-tee.svg",
+    "sizes": ["S", "M", "L", "XL"]
+  },
+  {
+    "id": "tee-forest",
+    "name": "Forest Canopy Tee",
+    "description": "Relaxed fit tee featuring a layered pine forest silhouette.",
+    "price": 2700,
+    "currency": "usd",
+    "image": "/products/forest-tee.svg",
+    "sizes": ["S", "M", "L", "XL"]
+  }
+]

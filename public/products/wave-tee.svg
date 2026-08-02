@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-label="Ocean Wave Tee">
+  <rect width="300" height="300" fill="#eef7f7"/>
+  <path d="M90 60 L120 40 L150 60 L180 40 L210 60 L210 90 L235 100 L235 260 L65 260 L65 100 L90 90 Z"
+        fill="#f5f5f5" stroke="#c9ced6" stroke-width="3"/>
+  <path d="M85 150 Q107 130 130 150 T175 150 T220 150" fill="none" stroke="#2e7d8c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M85 180 Q107 160 130 180 T175 180 T220 180" fill="none" stroke="#5aa6b4" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-label="Forest Canopy Tee">
+  <rect width="300" height="300" fill="#eef7ef"/>
+  <path d="M90 60 L120 40 L150 60 L180 40 L210 60 L210 90 L235 100 L235 260 L65 260 L65 100 L90 90 Z"
+        fill="#f5f5f5" stroke="#c9ced6" stroke-width="3"/>
+  <path d="M150 110 L172 150 L160 150 L180 185 L120 185 L140 150 L128 150 Z" fill="#3f6b4a"/>
+  <path d="M118 145 L138 178 L128 178 L145 205 L95 205 L112 178 L102 178 Z" fill="#2f5238"/>
+  <path d="M182 145 L202 178 L192 178 L209 205 L159 205 L176 178 L166 178 Z" fill="#2f5238"/>
+</svg>

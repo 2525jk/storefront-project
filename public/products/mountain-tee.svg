@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-label="Mountain Line Tee">
+  <rect width="300" height="300" fill="#eef2f7"/>
+  <path d="M90 60 L120 40 L150 60 L180 40 L210 60 L210 90 L235 100 L235 260 L65 260 L65 100 L90 90 Z"
+        fill="#f5f5f5" stroke="#c9ced6" stroke-width="3"/>
+  <path d="M100 175 L135 130 L160 160 L180 135 L210 175 Z" fill="none" stroke="#3d5a73" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="150" cy="118" r="8" fill="#e7c65a"/>
+</svg>

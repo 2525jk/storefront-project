@@ -1,0 +1,128 @@
+---
+import products from '../../catalog/products.json';
+import BuyButton from '../components/BuyButton.tsx';
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  image: string;
+  sizes: string[];
+}
+
+const catalog = products as Product[];
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Tee Shop</title>
+		<style>
+			body {
+				font-family: system-ui, sans-serif;
+				max-width: 960px;
+				margin: 0 auto;
+				padding: 2rem 1rem 4rem;
+				color: #1a1a1a;
+			}
+			header {
+				margin-bottom: 2rem;
+			}
+			.test-mode-banner {
+				background: #fff3cd;
+				border: 1px solid #ffe08a;
+				border-radius: 6px;
+				padding: 0.75rem 1rem;
+				font-size: 0.9rem;
+			}
+			.grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 1.5rem;
+			}
+			.card {
+				border: 1px solid #e2e2e2;
+				border-radius: 8px;
+				padding: 1rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+			.card img {
+				width: 100%;
+				aspect-ratio: 1;
+				object-fit: cover;
+				border-radius: 6px;
+			}
+			.card h2 {
+				font-size: 1.1rem;
+				margin: 0;
+			}
+			.card p {
+				margin: 0;
+				font-size: 0.9rem;
+				color: #444;
+			}
+			.price {
+				font-weight: 600;
+				font-size: 1.05rem;
+				color: #1a1a1a;
+			}
+			.buy-button {
+				display: flex;
+				gap: 0.5rem;
+				margin-top: 0.5rem;
+			}
+			.buy-button select {
+				flex: 0 0 auto;
+			}
+			.buy-button button {
+				flex: 1;
+				background: #1a1a1a;
+				color: white;
+				border: none;
+				border-radius: 6px;
+				padding: 0.6rem 1rem;
+				cursor: pointer;
+				font-size: 0.95rem;
+			}
+			.buy-button button:disabled {
+				opacity: 0.6;
+				cursor: not-allowed;
+			}
+			.buy-button-error {
+				color: #b00020;
+				font-size: 0.85rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>Tee Shop</h1>
+			<p>Print-on-demand t-shirts, built to learn Stripe Checkout.</p>
+			<div class="test-mode-banner">
+				Stripe test mode — use card <code>4242 4242 4242 4242</code>, any future expiry, any CVC,
+				and any ZIP.
+			</div>
+		</header>
+		<main class="grid">
+			{
+				catalog.map((product) => (
+					<div class="card">
+						<img src={product.image} alt={product.name} />
+						<h2>{product.name}</h2>
+						<p>{product.description}</p>
+						<p class="price">${(product.price / 100).toFixed(2)}</p>
+						<BuyButton client:load productId={product.id} sizes={product.sizes} />
+					</div>
+				))
+			}
+		</main>
+	</body>
+</html>
