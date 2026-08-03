@@ -1,36 +1,40 @@
 /* Design tokens shared by every page. Kept as plain CSS custom properties
    (no build-step preprocessor) since Astro ships this untouched. */
 :root {
-  /* Nature-inspired palette (the catalog is mountain/wave/forest tees —
-     the theme leans into that instead of a generic neutral gray). */
-  --color-bg: #f2f8f6;
-  --color-surface: #ffffff;
-  --color-text: #142621;
-  --color-text-muted: #52756b;
-  --color-border: #d9e8e2;
-  --color-primary: #1f6f54;
-  --color-primary-dark: #164f3c;
-  --color-secondary: #157a9c;
+  /* Cyberpunk vaporwave sunset — dark night-purple chrome with hot pink
+     as the primary accent, electric violet as secondary, and a
+     purple->pink->orange->gold gradient for the hero. Text-role usages of
+     "primary" intentionally use the BRIGHT shade (--color-primary), not a
+     darker one — on a dark background, dark-toned text is unreadable, the
+     opposite of how this token pairing worked in a light theme. */
+  --color-bg: #170b2e;
+  --color-surface: #241640;
+  --color-text: #f5ecff;
+  --color-text-muted: #b9a0d9;
+  --color-border: #3f2766;
+  --color-primary: #ff2e88;
+  --color-primary-dark: #d6136a;
+  --color-secondary: #9d4edd;
   --color-accent: var(--color-primary);
   --color-accent-contrast: #ffffff;
-  --gradient-brand: linear-gradient(135deg, #157a9c 0%, #1f6f54 100%);
-  --color-success-bg: #edf8f0;
-  --color-success-border: #a9dcbd;
-  --color-warning-bg: #fff8e6;
-  --color-warning-border: #ffe08a;
-  --color-danger: #b00020;
+  --gradient-brand: linear-gradient(135deg, #3b1a5c 0%, #b6338f 40%, #ff7a4d 70%, #ffc857 100%);
+  --color-success-bg: #17362a;
+  --color-success-border: #34d399;
+  --color-warning-bg: #3a2a12;
+  --color-warning-border: #ffb347;
+  --color-danger: #ff4d6d;
 
-  --color-footer-bg: #123528;
-  --color-footer-text: #d9ede4;
-  --color-footer-text-muted: #8fb8a8;
-  --color-footer-border: rgba(255, 255, 255, 0.14);
+  --color-footer-bg: #0e0620;
+  --color-footer-text: #f0e3ff;
+  --color-footer-text-muted: #9c85c2;
+  --color-footer-border: rgba(255, 255, 255, 0.12);
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
 
-  --shadow-sm: 0 1px 2px rgba(20, 60, 45, 0.06);
-  --shadow-md: 0 8px 24px rgba(20, 60, 45, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 28px rgba(255, 46, 136, 0.28);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -50,7 +54,7 @@
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
   scrollbar-color: var(--color-border) var(--color-bg);
 }
 
@@ -151,7 +155,7 @@ button:focus-visible {
 
 .btn-secondary {
   background: var(--color-surface);
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   border: 1px solid var(--color-border);
 }
 
@@ -274,7 +278,7 @@ button:focus-visible {
   font-weight: 700;
   text-decoration: none;
   letter-spacing: -0.01em;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
 }
 
 .brand-mark {
@@ -304,7 +308,7 @@ button:focus-visible {
   align-items: center;
   gap: 0.35rem;
   padding: 0.25rem;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -342,10 +346,12 @@ button:focus-visible {
 
 .hero .hero-title {
   color: #ffffff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
 
 .hero .hero-subtitle {
   color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
 }
 
 .hero-title {
@@ -362,6 +368,7 @@ button:focus-visible {
 
 .test-mode-banner {
   background: rgba(255, 255, 255, 0.94);
+  color: #241030;
   border: 1px solid var(--color-warning-border);
   border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
@@ -564,7 +571,7 @@ button:focus-visible {
 .price {
   font-weight: 700;
   font-size: 1.05rem;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
 }
 
 .product-actions {
@@ -714,7 +721,7 @@ button:focus-visible {
 .product-detail-price {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   margin: 0 0 var(--space-4);
 }
 
@@ -789,7 +796,7 @@ button:focus-visible {
 
 .cart-row-subtotal {
   font-weight: 700;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   white-space: nowrap;
 }
 
@@ -822,7 +829,7 @@ button:focus-visible {
 .cart-summary-total {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
 }
 
 .cart-summary-note {
