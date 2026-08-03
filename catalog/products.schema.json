@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Product",
+  "description": "One entry in catalog/products.json, or one drafted product awaiting review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "description", "price", "currency", "image", "sizes"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "URL-safe slug, unique across the catalog. Used in /products/:id and as the Stripe line-item metadata key.",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "minLength": 3,
+      "maxLength": 40
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 60
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 200
+    },
+    "price": {
+      "type": "integer",
+      "description": "Price in cents. Bounded to match the existing catalog's range.",
+      "minimum": 500,
+      "maximum": 20000
+    },
+    "currency": {
+      "type": "string",
+      "enum": ["usd"]
+    },
+    "image": {
+      "type": "string",
+      "description": "Root-relative path; the file must exist under public/products/.",
+      "pattern": "^/products/[a-z0-9-]+\\.svg$"
+    },
+    "sizes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["XS", "S", "M", "L", "XL", "XXL"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}
