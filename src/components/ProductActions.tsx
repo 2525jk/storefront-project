@@ -25,18 +25,19 @@ export default function ProductActions({ product, variant = 'card' }: ProductAct
     <div className={`product-actions product-actions-${variant}`}>
       <div className="product-actions-row">
         {product.sizes && product.sizes.length > 0 && (
-          <select
-            className="select"
-            value={size}
-            onChange={(e) => setSize(e.target.value)}
-            aria-label={`Size for ${product.name}`}
-          >
+          <div className="size-pills" role="group" aria-label={`Size for ${product.name}`}>
             {product.sizes.map((s) => (
-              <option key={s} value={s}>
+              <button
+                key={s}
+                type="button"
+                className={`size-pill${s === size ? ' size-pill-active' : ''}`}
+                aria-pressed={s === size}
+                onClick={() => setSize(s)}
+              >
                 {s}
-              </option>
+              </button>
             ))}
-          </select>
+          </div>
         )}
         {variant === 'detail' && (
           <div className="qty-stepper" role="group" aria-label="Quantity">

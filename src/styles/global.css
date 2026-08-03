@@ -371,6 +371,15 @@ button:focus-visible {
   margin-top: 1.5rem;
 }
 
+.section-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-secondary);
+  margin: 0 0 var(--space-2);
+}
+
 /* Toolbar (search + sort) */
 .toolbar {
   display: flex;
@@ -410,6 +419,7 @@ button:focus-visible {
 
 .product-card:hover {
   box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
   transform: translateY(-2px);
 }
 
@@ -423,6 +433,11 @@ button:focus-visible {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-card-image img {
+  transform: scale(1.04);
 }
 
 .product-card h2 {
@@ -460,8 +475,52 @@ button:focus-visible {
 
 .product-actions-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
+}
+
+.size-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.size-pill {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+    transform 0.05s ease;
+}
+
+.size-pill:hover {
+  border-color: var(--color-primary);
+}
+
+.size-pill:active {
+  transform: translateY(1px);
+}
+
+.size-pill-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.size-pill:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
 }
 
 .product-actions-row .btn {
@@ -532,6 +591,11 @@ button:focus-visible {
   overflow: hidden;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  padding: 1.5rem;
+}
+
+.product-detail-image img {
+  border-radius: var(--radius-sm);
 }
 
 .product-detail-info {
