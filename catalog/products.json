@@ -6,6 +6,7 @@
     "price": 2500,
     "currency": "usd",
     "image": "/products/mountain-tee.svg",
+    "category": "apparel",
     "sizes": [
       "S",
       "M",
@@ -20,6 +21,7 @@
     "price": 2500,
     "currency": "usd",
     "image": "/products/wave-tee.svg",
+    "category": "apparel",
     "sizes": [
       "S",
       "M",
@@ -34,6 +36,7 @@
     "price": 2700,
     "currency": "usd",
     "image": "/products/forest-tee.svg",
+    "category": "apparel",
     "sizes": [
       "S",
       "M",
@@ -48,11 +51,30 @@
     "price": 2600,
     "currency": "usd",
     "image": "/products/tee-aurora.svg",
+    "category": "apparel",
     "sizes": [
       "S",
       "M",
       "L",
       "XL"
     ]
+  },
+  {
+    "id": "mug-alpine",
+    "name": "Alpine Mug",
+    "description": "11oz ceramic mug printed with a minimalist mountain ridge — good for coffee, better for a slow morning.",
+    "price": 1400,
+    "currency": "usd",
+    "image": "/products/mug-alpine.svg",
+    "category": "mugs"
+  },
+  {
+    "id": "sticker-trailhead",
+    "name": "Trailhead Sticker",
+    "description": "Weatherproof vinyl sticker, 3 inches, with a hand-drawn trail-and-peak icon for a water bottle or laptop.",
+    "price": 500,
+    "currency": "usd",
+    "image": "/products/sticker-trailhead.svg",
+    "category": "stickers"
   }
 ]

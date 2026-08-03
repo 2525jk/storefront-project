@@ -20,7 +20,8 @@ be fully automated; the merge is a deliberate checkpoint.
 ## Pipeline stages
 
 ```
-1. PROPOSE        agent invents a product concept (name, description, price, sizes)
+1. PROPOSE        agent invents a product concept (name, description, price, category, sizes*)
+                   (*sizes only for the "apparel" category — mugs/stickers omit it)
                    ↓
 2. DESIGN         agent generates the artwork (SVG line-art, in the house style)
                    ↓

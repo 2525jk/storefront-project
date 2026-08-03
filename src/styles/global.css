@@ -371,6 +371,80 @@ button:focus-visible {
   margin-top: 1.5rem;
 }
 
+/* Shop layout: category sidebar + content */
+.shop-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.category-nav {
+  position: sticky;
+  top: 5.5rem;
+}
+
+.category-nav h2 {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-3);
+}
+
+.category-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.category-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.category-link:hover {
+  background: var(--color-surface);
+}
+
+.category-link-active {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.category-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border-radius: 999px;
+  min-width: 1.6rem;
+  padding: 0.1rem 0.45rem;
+  text-align: center;
+}
+
+.category-link-active .category-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
 .section-eyebrow {
   font-size: 0.8rem;
   font-weight: 700;
@@ -878,6 +952,31 @@ button:focus-visible {
 
 /* Responsive */
 @media (max-width: 760px) {
+  .shop-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .category-nav {
+    position: static;
+  }
+
+  .category-nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .category-link {
+    width: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .category-link-active {
+    border-color: var(--color-primary);
+  }
+
   .product-detail {
     grid-template-columns: 1fr;
   }

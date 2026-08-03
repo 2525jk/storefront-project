@@ -10,13 +10,27 @@ interface Product {
   price: number;
   currency: string;
   image: string;
-  sizes: string[];
+  category: string;
+  sizes?: string[];
 }
 
 const catalog = products as Product[];
 
 const base = import.meta.env.BASE_URL;
 const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
+
+const categories = [
+  { id: 'all', label: 'All products' },
+  { id: 'apparel', label: 'Apparel' },
+  { id: 'mugs', label: 'Mugs' },
+  { id: 'stickers', label: 'Stickers' },
+];
+const categoryCounts = Object.fromEntries(
+  categories.map((c) => [
+    c.id,
+    c.id === 'all' ? catalog.length : catalog.filter((p) => p.category === c.id).length,
+  ])
+);
 ---
 
 <Layout title="Tee Shop — print-on-demand t-shirts">
@@ -52,46 +66,72 @@ const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 		</svg>
 	</section>
 
-	<p class="section-eyebrow">Shop the collection</p>
-	<div class="toolbar">
-		<input
-			class="input toolbar-search"
-			type="search"
-			id="product-search"
-			placeholder="Search products…"
-			aria-label="Search products"
-		/>
-		<select class="select toolbar-sort" id="product-sort" aria-label="Sort products">
-			<option value="featured">Featured</option>
-			<option value="price-asc">Price: low to high</option>
-			<option value="price-desc">Price: high to low</option>
-			<option value="name-asc">Name: A to Z</option>
-		</select>
-	</div>
+	<div class="shop-layout">
+		<aside class="category-nav" aria-label="Categories">
+			<h2>Categories</h2>
+			<ul>
+				{
+					categories.map((c) => (
+						<li>
+							<button
+								type="button"
+								class={`category-link${c.id === 'all' ? ' category-link-active' : ''}`}
+								data-category={c.id}
+								aria-pressed={c.id === 'all'}
+							>
+								<span>{c.label}</span>
+								<span class="category-count">{categoryCounts[c.id]}</span>
+							</button>
+						</li>
+					))
+				}
+			</ul>
+		</aside>
 
-	<main class="product-grid" id="product-grid">
-		{
-			catalog.map((product, index) => (
-				<div
-					class="product-card card-surface"
-					data-name={product.name.toLowerCase()}
-					data-price={product.price}
-					data-order={index}
-				>
-					<a class="product-card-image" href={withBase(`/products/${product.id}`)}>
-						<img src={withBase(product.image)} alt={product.name} loading="lazy" />
-					</a>
-					<h2>
-						<a href={withBase(`/products/${product.id}`)}>{product.name}</a>
-					</h2>
-					<p>{product.description}</p>
-					<p class="price">${(product.price / 100).toFixed(2)}</p>
-					<ProductActions client:load product={product} />
-				</div>
-			))
-		}
-	</main>
-	<p class="toolbar-empty" id="toolbar-empty">No products match your search.</p>
+		<div class="shop-content">
+			<p class="section-eyebrow">Shop the collection</p>
+			<div class="toolbar">
+				<input
+					class="input toolbar-search"
+					type="search"
+					id="product-search"
+					placeholder="Search products…"
+					aria-label="Search products"
+				/>
+				<select class="select toolbar-sort" id="product-sort" aria-label="Sort products">
+					<option value="featured">Featured</option>
+					<option value="price-asc">Price: low to high</option>
+					<option value="price-desc">Price: high to low</option>
+					<option value="name-asc">Name: A to Z</option>
+				</select>
+			</div>
+
+			<main class="product-grid" id="product-grid">
+				{
+					catalog.map((product, index) => (
+						<div
+							class="product-card card-surface"
+							data-name={product.name.toLowerCase()}
+							data-price={product.price}
+							data-order={index}
+							data-category={product.category}
+						>
+							<a class="product-card-image" href={withBase(`/products/${product.id}`)}>
+								<img src={withBase(product.image)} alt={product.name} loading="lazy" />
+							</a>
+							<h2>
+								<a href={withBase(`/products/${product.id}`)}>{product.name}</a>
+							</h2>
+							<p>{product.description}</p>
+							<p class="price">${(product.price / 100).toFixed(2)}</p>
+							<ProductActions client:load product={product} />
+						</div>
+					))
+				}
+			</main>
+			<p class="toolbar-empty" id="toolbar-empty">No products match your search.</p>
+		</div>
+	</div>
 </Layout>
 
 <script>
@@ -99,6 +139,9 @@ const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 	const sortSelect = document.getElementById('product-sort') as HTMLSelectElement | null;
 	const grid = document.getElementById('product-grid');
 	const emptyMessage = document.getElementById('toolbar-empty');
+	const categoryButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.category-link'));
+
+	let activeCategory = 'all';
 
 	function applyFilter() {
 		if (!grid) return;
@@ -108,7 +151,9 @@ const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 
 		for (const card of cards) {
 			const name = card.dataset.name ?? '';
-			const matches = name.includes(query);
+			const matchesSearch = name.includes(query);
+			const matchesCategory = activeCategory === 'all' || card.dataset.category === activeCategory;
+			const matches = matchesSearch && matchesCategory;
 			card.style.display = matches ? '' : 'none';
 			if (matches) visibleCount += 1;
 		}
@@ -138,4 +183,16 @@ const withBase = (p: string) => `${base}${p.replace(/^\//, '')}`;
 
 	searchInput?.addEventListener('input', applyFilter);
 	sortSelect?.addEventListener('change', applySort);
+
+	for (const button of categoryButtons) {
+		button.addEventListener('click', () => {
+			activeCategory = button.dataset.category ?? 'all';
+			for (const b of categoryButtons) {
+				const isActive = b === button;
+				b.classList.toggle('category-link-active', isActive);
+				b.setAttribute('aria-pressed', String(isActive));
+			}
+			applyFilter();
+		});
+	}
 </script>

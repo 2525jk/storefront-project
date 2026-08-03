@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-label="Trailhead Sticker">
+  <rect width="300" height="300" fill="#eef7f2"/>
+  <circle cx="150" cy="150" r="105" fill="#f5f5f5" stroke="#c9ced6" stroke-width="3"/>
+  <circle cx="150" cy="150" r="90" fill="none" stroke="#1f6f54" stroke-width="2" stroke-dasharray="4 5"/>
+  <path d="M105 185 L135 135 L155 165 L180 120 L200 185 Z" fill="#1f6f54"/>
+  <path d="M95 195 Q150 175 205 195" fill="none" stroke="#157a9c" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -11,8 +11,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.join(__dirname, '..');
 const DEFAULT_IMAGE_DIR = path.join(REPO_ROOT, 'public', 'products');
 
-const ALLOWED_KEYS = ['id', 'name', 'description', 'price', 'currency', 'image', 'sizes'];
+const ALLOWED_KEYS = ['id', 'name', 'description', 'price', 'currency', 'image', 'category', 'sizes'];
+const REQUIRED_KEYS = ['id', 'name', 'description', 'price', 'currency', 'image', 'category'];
 const ALLOWED_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const ALLOWED_CATEGORIES = ['apparel', 'mugs', 'stickers'];
 const ID_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const IMAGE_PATTERN = /^\/products\/[a-z0-9-]+\.svg$/;
 
@@ -39,12 +41,12 @@ export function validateProduct(product, { existingIds = [], imageDir = DEFAULT_
   for (const key of Object.keys(product)) {
     if (!ALLOWED_KEYS.includes(key)) errors.push(`Unknown field "${key}"`);
   }
-  for (const key of ALLOWED_KEYS) {
+  for (const key of REQUIRED_KEYS) {
     if (!(key in product)) errors.push(`Missing required field "${key}"`);
   }
   if (errors.length > 0) return errors; // shape is wrong enough that type checks below aren't meaningful
 
-  const { id, name, description, price, currency, image, sizes } = product;
+  const { id, name, description, price, currency, image, category, sizes } = product;
 
   if (typeof id !== 'string' || !ID_PATTERN.test(id) || id.length < 3 || id.length > 40) {
     errors.push(`"id" must be a lowercase, hyphenated slug, 3-40 chars (got ${JSON.stringify(id)})`);
@@ -74,16 +76,23 @@ export function validateProduct(product, { existingIds = [], imageDir = DEFAULT_
     errors.push(`"image" points to ${image}, but no matching file was found in ${path.relative(REPO_ROOT, imageDir)}/`);
   }
 
-  if (!Array.isArray(sizes) || sizes.length === 0) {
-    errors.push('"sizes" must be a non-empty array');
-  } else {
-    const seen = new Set();
-    for (const size of sizes) {
-      if (!ALLOWED_SIZES.includes(size)) {
-        errors.push(`"sizes" contains invalid value ${JSON.stringify(size)} (allowed: ${ALLOWED_SIZES.join(', ')})`);
+  if (typeof category !== 'string' || !ALLOWED_CATEGORIES.includes(category)) {
+    errors.push(`"category" must be one of ${ALLOWED_CATEGORIES.join(', ')} (got ${JSON.stringify(category)})`);
+  }
+
+  // Optional — products without sizing (mugs, stickers) omit this entirely.
+  if ('sizes' in product) {
+    if (!Array.isArray(sizes) || sizes.length === 0) {
+      errors.push('"sizes", if present, must be a non-empty array');
+    } else {
+      const seen = new Set();
+      for (const size of sizes) {
+        if (!ALLOWED_SIZES.includes(size)) {
+          errors.push(`"sizes" contains invalid value ${JSON.stringify(size)} (allowed: ${ALLOWED_SIZES.join(', ')})`);
+        }
+        if (seen.has(size)) errors.push(`"sizes" has a duplicate value ${JSON.stringify(size)}`);
+        seen.add(size);
       }
-      if (seen.has(size)) errors.push(`"sizes" has a duplicate value ${JSON.stringify(size)}`);
-      seen.add(size);
     }
   }
 

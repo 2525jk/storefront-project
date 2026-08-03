@@ -10,7 +10,8 @@ interface Product {
   price: number;
   currency: string;
   image: string;
-  sizes: string[];
+  category: string;
+  sizes?: string[];
 }
 
 export function getStaticPaths() {

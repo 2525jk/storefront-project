@@ -8,7 +8,8 @@ interface Product {
   price: number;
   currency: string;
   image: string;
-  sizes: string[];
+  category: string;
+  sizes?: string[];
 }
 
 interface ProductActionsProps {

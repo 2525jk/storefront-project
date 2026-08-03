@@ -4,7 +4,7 @@
   "description": "One entry in catalog/products.json, or one drafted product awaiting review.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "description", "price", "currency", "image", "sizes"],
+  "required": ["id", "name", "description", "price", "currency", "image", "category"],
   "properties": {
     "id": {
       "type": "string",
@@ -38,8 +38,14 @@
       "description": "Root-relative path; the file must exist under public/products/.",
       "pattern": "^/products/[a-z0-9-]+\\.svg$"
     },
+    "category": {
+      "type": "string",
+      "description": "Drives the shop page's left-hand category nav and its item counts.",
+      "enum": ["apparel", "mugs", "stickers"]
+    },
     "sizes": {
       "type": "array",
+      "description": "Optional — omit entirely for products that don't come in sizes (mugs, stickers).",
       "items": {
         "type": "string",
         "enum": ["XS", "S", "M", "L", "XL", "XXL"]
