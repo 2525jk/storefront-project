@@ -479,7 +479,10 @@ button:focus-visible {
 /* Product grid */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  /* auto-fill (not auto-fit): keeps track sizing stable when a category
+     filter leaves only one or two cards — auto-fit collapses the empty
+     tracks and stretches the remaining card(s) to fill the row. */
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: var(--space-6);
 }
 
@@ -561,8 +564,8 @@ button:focus-visible {
 }
 
 .size-pill {
-  min-width: 2.25rem;
-  height: 2.25rem;
+  min-width: 2.5rem;
+  height: 2.5rem;
   padding: 0 0.5rem;
   display: inline-flex;
   align-items: center;
@@ -618,6 +621,8 @@ button:focus-visible {
 }
 
 .qty-stepper .btn-sm {
+  min-width: 2rem;
+  min-height: 2rem;
   padding: 0.3rem 0.65rem;
   line-height: 1;
 }
@@ -968,6 +973,7 @@ button:focus-visible {
 
   .category-link {
     width: auto;
+    min-height: 2.5rem;
     border: 1px solid var(--color-border);
     border-radius: 999px;
     padding: 0.4rem 0.75rem;
