@@ -1,0 +1,9 @@
+{
+  "id": "tee-aurora",
+  "name": "Aurora Tee",
+  "description": "Midweight cotton tee with a shimmering aurora borealis print drifting over a mountain horizon.",
+  "price": 2600,
+  "currency": "usd",
+  "image": "/products/tee-aurora.svg",
+  "sizes": ["S", "M", "L", "XL"]
+}
