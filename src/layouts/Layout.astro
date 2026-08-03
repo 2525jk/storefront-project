@@ -45,6 +45,9 @@ const year = new Date().getFullYear();
 					</svg>
 					<span>Tee Shop</span>
 				</a>
+				<div class="header-search">
+					<slot name="header-search" />
+				</div>
 				<nav class="site-nav" aria-label="Primary">
 					<a href={base}>Shop</a>
 					<CartBadge client:load href={withBase('/cart')} />

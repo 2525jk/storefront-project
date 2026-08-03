@@ -34,6 +34,15 @@ const categoryCounts = Object.fromEntries(
 ---
 
 <Layout title="Tee Shop — print-on-demand t-shirts">
+	<input
+		slot="header-search"
+		class="input"
+		type="search"
+		id="product-search"
+		placeholder="Search products…"
+		aria-label="Search products"
+	/>
+
 	<section class="hero">
 		<h1 class="hero-title">Tee Shop</h1>
 		<p class="hero-subtitle">
@@ -91,13 +100,6 @@ const categoryCounts = Object.fromEntries(
 		<div class="shop-content">
 			<p class="section-eyebrow">Shop the collection</p>
 			<div class="toolbar">
-				<input
-					class="input toolbar-search"
-					type="search"
-					id="product-search"
-					placeholder="Search products…"
-					aria-label="Search products"
-				/>
 				<select class="select toolbar-sort" id="product-sort" aria-label="Sort products">
 					<option value="featured">Featured</option>
 					<option value="price-asc">Price: low to high</option>
