@@ -12,12 +12,30 @@
   --color-text: #2a2520;
   --color-text-muted: #6d6153;
   --color-border: #ddd2ba;
-  --color-primary: #2c4a60;
-  --color-primary-dark: #1a2e3d;
-  --color-secondary: #6b5636;
+  --color-primary: #7c5327;
+  --color-primary-dark: #55371a;
+  --color-secondary: #8a6a35;
   --color-accent: var(--color-primary);
   --color-accent-contrast: #ffffff;
-  --gradient-brand: linear-gradient(135deg, #1a2e3d 0%, #2c4a60 45%, #3b5a68 72%, #8a6d3f 100%);
+  --gradient-brand: linear-gradient(135deg, #3a2513 0%, #6b4423 42%, #8a5a2f 70%, #ad8347 100%);
+  /* Two overlapping streak patterns at slightly different angles/periods —
+     layered over a solid fill this reads as a faint wood grain; layered
+     over the beige body background (at lower opacity below) it reads as
+     paper/canvas tooth. */
+  --grain-wood: repeating-linear-gradient(
+      92deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      88deg,
+      rgba(0, 0, 0, 0.07) 0px,
+      rgba(0, 0, 0, 0.07) 1px,
+      transparent 1px,
+      transparent 8px
+    );
   --color-success-bg: #e8f0e3;
   --color-success-border: #6f8f5c;
   --color-warning-bg: #f6ecd8;
@@ -62,7 +80,13 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   color: var(--color-text);
-  background: var(--color-bg);
+  background-color: var(--color-bg);
+  /* Medium-strength canvas/paper grain: a fractal-noise SVG tile turned
+     into alpha-only speckle (0.09 alpha on the noise itself), fixed to the
+     viewport so it reads as wall texture rather than scrolling with the
+     page content. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -144,12 +168,13 @@ button:focus-visible {
 }
 
 .btn-primary {
-  background: var(--color-primary);
+  background-color: var(--color-primary);
+  background-image: var(--grain-wood);
   color: var(--color-accent-contrast);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-dark);
+  background-color: var(--color-primary-dark);
   opacity: 1;
 }
 
@@ -340,9 +365,9 @@ button:focus-visible {
    Styled like a museum wall plaque: a dark navy-to-brass panel with a thin
    brass border, rather than a bright banner. */
 .hero {
-  background: var(--gradient-brand);
+  background-image: var(--grain-wood), var(--gradient-brand);
   border-radius: var(--radius-lg);
-  border: 1px solid #8a6d3f;
+  border: 1px solid #c9a463;
   padding: 2.5rem 2rem 2rem;
   margin-bottom: var(--space-8);
 }
@@ -457,12 +482,13 @@ button:focus-visible {
 }
 
 .category-link-active {
-  background: var(--color-primary);
+  background-color: var(--color-primary);
+  background-image: var(--grain-wood);
   color: #ffffff;
 }
 
 .category-link-active:hover {
-  background: var(--color-primary-dark);
+  background-color: var(--color-primary-dark);
   color: #ffffff;
 }
 
@@ -626,7 +652,8 @@ button:focus-visible {
 }
 
 .size-pill-active {
-  background: var(--color-primary);
+  background-color: var(--color-primary);
+  background-image: var(--grain-wood);
   border-color: var(--color-primary);
   color: #ffffff;
 }
