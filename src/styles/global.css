@@ -1041,6 +1041,10 @@ button:focus-visible {
   margin: 0.5rem 0 0;
 }
 
+.footer-legal-links {
+  margin-top: 0.75rem;
+}
+
 .newsletter-form {
   display: flex;
   gap: 0.5rem;

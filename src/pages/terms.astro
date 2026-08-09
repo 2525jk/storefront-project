@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="Terms of Service — Tee Shop">
+	<div class="simple-page align-left">
+		<h1>Terms of Service</h1>
+		<p><em>Last updated: [date]. This is a starting draft, not legal advice — have it reviewed before relying on it.</em></p>
+
+		<h2>1. Who we are</h2>
+		<p>
+			Tee Shop ("we", "us") is operated by [Your Business Legal Name], [business address].
+			Contact us at <a href="mailto:hello@example.com">hello@example.com</a>.
+		</p>
+
+		<h2>2. Orders and payment</h2>
+		<p>
+			Every item is made to order — nothing is printed until you buy it. Payments are processed
+			securely by Stripe; we never see or store your full card number. Prices are shown in USD
+			and charged at checkout.
+		</p>
+
+		<h2>3. Production and shipping</h2>
+		<p>
+			Because each item is printed after you order it, please allow a few business days for
+			production in addition to shipping time. Shipping costs and timelines depend on your
+			delivery address and are shown at checkout.
+		</p>
+
+		<h2>4. Returns and refunds</h2>
+		<p>
+			See our <a href={`${base}refund-policy`}>Refund &amp; Returns Policy</a> for details.
+		</p>
+
+		<h2>5. Intellectual property</h2>
+		<p>
+			All designs, artwork, and site content are owned by us or our licensors. You may not
+			reproduce or resell them without permission.
+		</p>
+
+		<h2>6. Limitation of liability</h2>
+		<p>
+			We provide this site and its products "as is." To the fullest extent permitted by law, we
+			aren't liable for indirect or consequential damages arising from your use of the site or
+			products purchased through it.
+		</p>
+
+		<h2>7. Changes to these terms</h2>
+		<p>
+			We may update these terms from time to time; the "last updated" date above will reflect
+			the most recent revision.
+		</p>
+
+		<h2>8. Governing law</h2>
+		<p>These terms are governed by the laws of [your jurisdiction].</p>
+
+		<h2>9. Contact</h2>
+		<p>Questions about these terms? Email <a href="mailto:hello@example.com">hello@example.com</a>.</p>
+	</div>
+</Layout>

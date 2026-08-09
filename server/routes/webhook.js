@@ -40,12 +40,31 @@ router.post('/webhooks/stripe', async (req, res) => {
       console.error(`Could not parse items metadata for session ${session.id}:`, err.message);
     }
 
+    // Stripe's Checkout Session field for this is `shipping_details` (not
+    // `shipping`, which was retired) as of recent API versions — recheck
+    // against the Stripe API version pinned by this project's `stripe`
+    // package if this ever comes back empty despite shipping being
+    // collected.
+    const shippingDetails = session.shipping_details;
+    const shippingAddress = shippingDetails
+      ? {
+          name: shippingDetails.name,
+          address1: shippingDetails.address?.line1,
+          address2: shippingDetails.address?.line2 || null,
+          city: shippingDetails.address?.city,
+          state: shippingDetails.address?.state,
+          country: shippingDetails.address?.country,
+          zip: shippingDetails.address?.postal_code,
+        }
+      : null;
+
     const isNewOrder = recordOrder({
       sessionId: session.id,
       items,
       amountTotal: session.amount_total,
       currency: session.currency,
       customerEmail: session.customer_details?.email ?? null,
+      shippingAddress,
     });
 
     if (isNewOrder) {
@@ -58,6 +77,7 @@ router.post('/webhooks/stripe', async (req, res) => {
             quantity: item.quantity,
             size: item.size ?? undefined,
             customerEmail: session.customer_details?.email ?? undefined,
+            shippingAddress,
           })
           .catch((err) => {
             console.error(

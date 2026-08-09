@@ -10,6 +10,16 @@ const router = Router();
 // comfortably under the limit even with several lines in the cart.
 const MAX_CART_ITEMS = 15;
 
+// Countries Checkout will collect a shipping address for. Defaults to
+// US-only so an unconfigured deployment doesn't accept orders it can't
+// actually fulfill — widen via SHIP_TO_COUNTRIES (comma-separated ISO
+// 3166-1 alpha-2 codes) once the POD provider's shipping coverage is known.
+const DEFAULT_SHIP_TO_COUNTRIES = ['US'];
+const shipToCountries = (process.env.SHIP_TO_COUNTRIES || '')
+  .split(',')
+  .map((c) => c.trim().toUpperCase())
+  .filter(Boolean);
+
 router.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body ?? {};
 
@@ -63,11 +73,18 @@ router.post('/create-checkout-session', async (req, res) => {
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: lineItems,
+      shipping_address_collection: {
+        allowed_countries: shipToCountries.length > 0 ? shipToCountries : DEFAULT_SHIP_TO_COUNTRIES,
+      },
       metadata: {
         items: JSON.stringify(metadataItems),
       },
       success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/cancel`,
+      // Off by default: enabling this without Stripe Tax configured for the
+      // account (origin address, registrations) makes session creation
+      // fail outright. Flip STRIPE_AUTOMATIC_TAX=true once that's set up.
+      ...(process.env.STRIPE_AUTOMATIC_TAX === 'true' ? { automatic_tax: { enabled: true } } : {}),
     });
 
     res.json({ url: session.url });

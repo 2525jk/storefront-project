@@ -16,6 +16,13 @@ export function initDb() {
       amount_total INTEGER,
       currency TEXT,
       customer_email TEXT,
+      shipping_name TEXT,
+      shipping_address1 TEXT,
+      shipping_address2 TEXT,
+      shipping_city TEXT,
+      shipping_state TEXT,
+      shipping_country TEXT,
+      shipping_zip TEXT,
       status TEXT NOT NULL DEFAULT 'paid',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
@@ -44,18 +51,40 @@ function getDb() {
  * inserted, so callers can tell a fresh order from a duplicate delivery (and
  * know not to insert the line items — or trigger fulfillment — twice).
  */
-export function recordOrder({ sessionId, items, amountTotal, currency, customerEmail }) {
+export function recordOrder({
+  sessionId,
+  items,
+  amountTotal,
+  currency,
+  customerEmail,
+  shippingAddress,
+}) {
   const database = getDb();
 
   const insertOrder = database.prepare(`
-    INSERT OR IGNORE INTO orders (session_id, amount_total, currency, customer_email)
-    VALUES (@sessionId, @amountTotal, @currency, @customerEmail)
+    INSERT OR IGNORE INTO orders (
+      session_id, amount_total, currency, customer_email,
+      shipping_name, shipping_address1, shipping_address2,
+      shipping_city, shipping_state, shipping_country, shipping_zip
+    )
+    VALUES (
+      @sessionId, @amountTotal, @currency, @customerEmail,
+      @shippingName, @shippingAddress1, @shippingAddress2,
+      @shippingCity, @shippingState, @shippingCountry, @shippingZip
+    )
   `);
   const info = insertOrder.run({
     sessionId,
     amountTotal: amountTotal ?? null,
     currency: currency ?? null,
     customerEmail: customerEmail ?? null,
+    shippingName: shippingAddress?.name ?? null,
+    shippingAddress1: shippingAddress?.address1 ?? null,
+    shippingAddress2: shippingAddress?.address2 ?? null,
+    shippingCity: shippingAddress?.city ?? null,
+    shippingState: shippingAddress?.state ?? null,
+    shippingCountry: shippingAddress?.country ?? null,
+    shippingZip: shippingAddress?.zip ?? null,
   });
 
   if (info.changes !== 1) return false;
