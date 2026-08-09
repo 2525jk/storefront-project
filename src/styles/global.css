@@ -81,11 +81,29 @@ body {
   font-family: var(--font-sans);
   color: var(--color-text);
   background-color: var(--color-bg);
-  /* Medium-strength canvas/paper grain: a fractal-noise SVG tile turned
-     into alpha-only speckle (0.09 alpha on the noise itself), fixed to the
-     viewport so it reads as wall texture rather than scrolling with the
-     page content. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Papyrus texture: a woven fiber crosshatch (two fine repeating-gradient
+     line grids, one per strip layer as in real papyrus construction) on
+     top of two sepia-toned noise tiles — a fine grain layer and a coarser,
+     lower-frequency layer for soft mottled staining. All four layers are
+     tinted warm brown rather than grey so it reads as aged paper rather
+     than dust/speckle. Fixed to the viewport so it reads as page material
+     rather than scrolling with content. */
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(90, 62, 30, 0.05) 0px,
+      rgba(90, 62, 30, 0.05) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(90, 62, 30, 0.045) 0px,
+      rgba(90, 62, 30, 0.045) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5 0 0 0 0 0.38 0 0 0 0 0.18 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5 0 0 0 0 0.36 0 0 0 0 0.16 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E");
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
@@ -283,34 +301,6 @@ button:focus-visible {
   padding: 1rem 1.25rem;
 }
 
-/* Decorative Ionic columns flanking the header — a simplified marble
-   shaft with volute-scroll capital, rendered as flat vector shapes rather
-   than a photorealistic asset. Hidden until the viewport is wide enough
-   to show them outside the centered content column without crowding it. */
-.header-column {
-  display: none;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 3.4rem;
-  width: auto;
-  pointer-events: none;
-}
-
-.header-column-left {
-  left: 1.25rem;
-}
-
-.header-column-right {
-  right: 1.25rem;
-}
-
-@media (min-width: 1340px) {
-  .header-column {
-    display: block;
-  }
-}
-
 .header-search {
   flex: 1 1 200px;
   display: flex;
@@ -388,6 +378,13 @@ button:focus-visible {
   min-height: 50vh;
 }
 
+/* Hero-frame wraps the hero card purely to give the flanking Ionic
+   columns a positioning context; it carries no visual styling of its own. */
+.hero-frame {
+  position: relative;
+  margin-bottom: var(--space-8);
+}
+
 /* Hero — used only on the shop page; a gradient "card" rather than a
    full-bleed band so it doesn't require restructuring the shared Layout.
    Styled like a museum wall plaque: a dark navy-to-brass panel with a thin
@@ -397,7 +394,35 @@ button:focus-visible {
   border-radius: var(--radius-lg);
   border: 1px solid #c9a463;
   padding: 2.5rem 2rem 2rem;
-  margin-bottom: var(--space-8);
+}
+
+/* Decorative Ionic columns flanking the hero card — a simplified marble
+   shaft with volute-scroll capital, rendered as flat vector shapes rather
+   than a photorealistic asset. Scaled to the hero's own height so they
+   read as columns "holding up" the card. Hidden until the viewport is
+   wide enough to show them outside the centered content column without
+   crowding it. */
+.hero-column {
+  display: none;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: auto;
+  pointer-events: none;
+}
+
+.hero-column-left {
+  left: -4.5rem;
+}
+
+.hero-column-right {
+  right: -4.5rem;
+}
+
+@media (min-width: 1400px) {
+  .hero-column {
+    display: block;
+  }
 }
 
 .hero .hero-title {
