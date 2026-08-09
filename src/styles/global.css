@@ -1,40 +1,40 @@
 /* Design tokens shared by every page. Kept as plain CSS custom properties
    (no build-step preprocessor) since Astro ships this untouched. */
 :root {
-  /* Cyberpunk vaporwave sunset — dark night-purple chrome with hot pink
-     as the primary accent, electric violet as secondary, and a
-     purple->pink->orange->gold gradient for the hero. Text-role usages of
-     "primary" intentionally use the BRIGHT shade (--color-primary), not a
-     darker one — on a dark background, dark-toned text is unreadable, the
-     opposite of how this token pairing worked in a light theme. */
-  --color-bg: #170b2e;
-  --color-surface: #241640;
-  --color-text: #f5ecff;
-  --color-text-muted: #b9a0d9;
-  --color-border: #3f2766;
-  --color-primary: #ff2e88;
-  --color-primary-dark: #d6136a;
-  --color-secondary: #9d4edd;
+  /* Museum / gallery aesthetic — warm beige walls, off-white matting, and
+     ink-charcoal text, with a single sophisticated accent (a deep placard
+     blue) used sparingly for interactive elements, plus a muted antique
+     brass as the secondary accent for hovers and small labels. Nothing here
+     is saturated; every hue is dulled toward neutral so the palette reads
+     as considered rather than decorative. */
+  --color-bg: #efe8d7;
+  --color-surface: #faf6ec;
+  --color-text: #2a2520;
+  --color-text-muted: #6d6153;
+  --color-border: #ddd2ba;
+  --color-primary: #2c4a60;
+  --color-primary-dark: #1a2e3d;
+  --color-secondary: #6b5636;
   --color-accent: var(--color-primary);
   --color-accent-contrast: #ffffff;
-  --gradient-brand: linear-gradient(135deg, #3b1a5c 0%, #b6338f 40%, #ff7a4d 70%, #ffc857 100%);
-  --color-success-bg: #17362a;
-  --color-success-border: #34d399;
-  --color-warning-bg: #3a2a12;
-  --color-warning-border: #ffb347;
-  --color-danger: #ff4d6d;
+  --gradient-brand: linear-gradient(135deg, #1a2e3d 0%, #2c4a60 45%, #3b5a68 72%, #8a6d3f 100%);
+  --color-success-bg: #e8f0e3;
+  --color-success-border: #6f8f5c;
+  --color-warning-bg: #f6ecd8;
+  --color-warning-border: #b68a3c;
+  --color-danger: #9c3b3b;
 
-  --color-footer-bg: #0e0620;
-  --color-footer-text: #f0e3ff;
-  --color-footer-text-muted: #9c85c2;
-  --color-footer-border: rgba(255, 255, 255, 0.12);
+  --color-footer-bg: #201b15;
+  --color-footer-text: #efe8d7;
+  --color-footer-text-muted: #b3a793;
+  --color-footer-border: rgba(255, 255, 255, 0.08);
 
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 28px rgba(255, 46, 136, 0.28);
+  --shadow-sm: 0 1px 3px rgba(26, 22, 16, 0.12);
+  --shadow-md: 0 10px 26px rgba(26, 22, 16, 0.16);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -54,7 +54,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   scrollbar-color: var(--color-border) var(--color-bg);
 }
 
@@ -336,10 +336,13 @@ button:focus-visible {
 }
 
 /* Hero — used only on the shop page; a gradient "card" rather than a
-   full-bleed band so it doesn't require restructuring the shared Layout. */
+   full-bleed band so it doesn't require restructuring the shared Layout.
+   Styled like a museum wall plaque: a dark navy-to-brass panel with a thin
+   brass border, rather than a bright banner. */
 .hero {
   background: var(--gradient-brand);
   border-radius: var(--radius-lg);
+  border: 1px solid #8a6d3f;
   padding: 2.5rem 2rem 2rem;
   margin-bottom: var(--space-8);
 }
@@ -368,7 +371,7 @@ button:focus-visible {
 
 .test-mode-banner {
   background: rgba(255, 255, 255, 0.94);
-  color: #241030;
+  color: var(--color-text);
   border: 1px solid var(--color-warning-border);
   border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
@@ -526,8 +529,10 @@ button:focus-visible {
 }
 
 .product-card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-primary);
+  /* Paper-lift shadow plus a thin inset brass line, like a highlighted
+     frame on a gallery wall, rather than a colored glow. */
+  box-shadow: var(--shadow-md), inset 0 0 0 1px var(--color-secondary);
+  border-color: var(--color-secondary);
   transform: translateY(-2px);
 }
 
@@ -734,7 +739,7 @@ button:focus-visible {
 .product-detail-meta {
   margin-top: var(--space-6);
   padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
+  border-top: 3px double var(--color-border);
   font-size: 0.85rem;
   color: var(--color-text-muted);
 }
@@ -850,6 +855,7 @@ button:focus-visible {
 /* Order status (success page) */
 .order-status {
   border: 1px solid var(--color-border);
+  border-top: 3px double var(--color-border);
   border-radius: var(--radius-md);
   padding: 1rem 1.25rem;
   margin: 1.5rem 0;
@@ -882,8 +888,9 @@ button:focus-visible {
   text-align: left;
 }
 
-/* Footer — a dark forest-green band, deliberately distinct from the light
-   body so the page reads as designed rather than a single flat template. */
+/* Footer — a dark, warm charcoal band (like a dim reading room or an
+   info-panel wall), deliberately distinct from the beige body so the page
+   reads as designed rather than a single flat template. */
 .site-footer {
   background: var(--color-footer-bg);
   color: var(--color-footer-text-muted);
