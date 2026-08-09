@@ -283,6 +283,34 @@ button:focus-visible {
   padding: 1rem 1.25rem;
 }
 
+/* Decorative Ionic columns flanking the header — a simplified marble
+   shaft with volute-scroll capital, rendered as flat vector shapes rather
+   than a photorealistic asset. Hidden until the viewport is wide enough
+   to show them outside the centered content column without crowding it. */
+.header-column {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 3.4rem;
+  width: auto;
+  pointer-events: none;
+}
+
+.header-column-left {
+  left: 1.25rem;
+}
+
+.header-column-right {
+  right: 1.25rem;
+}
+
+@media (min-width: 1340px) {
+  .header-column {
+    display: block;
+  }
+}
+
 .header-search {
   flex: 1 1 200px;
   display: flex;
